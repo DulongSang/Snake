@@ -1,3 +1,4 @@
 # Snake
-Hello from MasterTime
+Hello from **MasterTime**
+
 ![Pikachu](pikachu.gif)
