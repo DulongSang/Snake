@@ -54,6 +54,3 @@ const greedyAlgorithm = function(snake) {
 const manhattanDistance = function(a, b) {
     return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
 }
-
-
-const 
