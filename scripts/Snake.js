@@ -2,6 +2,10 @@ class Snake {
     rectWidth = 20;
     rectHeight = 20;
     boundary = [39, 29];
+
+    headColor = "DarkViolet";
+    bodyColor = "DeepPink";
+    foodColor = "Aqua";
     
     // fields declared
     position;
@@ -28,8 +32,9 @@ class Snake {
         this.bodyList.push(body1position);
         this.bodyList.push(body2position);
         this.length = 3;
-        for (let i = 0; i < this.length; i++) {
-            this.drawRect(this.bodyList[i], "rgb(200, 0, 0)");
+        this.drawRect(this.bodyList[0], this.headColor);
+        for (let i = 1; i < this.length; i++) {
+            this.drawRect(this.bodyList[i], this.bodyColor);
         }
     }
 
@@ -44,7 +49,7 @@ class Snake {
             let body = this.bodyList[this.length-1].clone();
             this.bodyList.push(body);
             this.length += 1;
-            this.drawRect(body, "rgb(200, 0, 0)");
+            this.drawRect(body, this.bodyColor);
 
             // generate new food
             this.generateFood();
@@ -60,20 +65,22 @@ class Snake {
         // move the last body to the front, and draw
         this.bodyList.pop();
         this.bodyList.unshift(this.position.clone());
-        this.drawRect(this.bodyList[0], "rgb(200, 0, 0)");
+        this.drawRect(this.bodyList[0], this.headColor);
+        this.drawRect(this.bodyList[1], this.bodyColor);
 
         return false;
     }
 
-    // mode: "body", "food"
-    isCollided(mode="body") {
-        let target;
+    // mode: "body", "food", "check"
+    isCollided(mode="body", target=undefined) {
         let ignoreHead;
         if (mode == "body") {
             target = this.position;
             ignoreHead = true;
         } else if (mode == "food") {
             target = this.food;
+            ignoreHead = false;
+        } else if (mode == "check"){
             ignoreHead = false;
         } else {
             return false;
@@ -89,9 +96,8 @@ class Snake {
         }
 
         // check boundary collision
-        if (ignoreHead &&
-            (target.x < 0 || target.x > this.boundary[0] ||
-            target.y < 0 || target.y > this.boundary[1])) {
+        if (target.x < 0 || target.x > this.boundary[0] ||
+            target.y < 0 || target.y > this.boundary[1]) {
             return true;
         }
         
@@ -114,7 +120,7 @@ class Snake {
             if (!this.isCollided("food"))
                 break;
         }
-        this.drawRect(this.food, "rgb(0, 200, 0)");
+        this.drawRect(this.food, this.foodColor);
     }
 
     drawRect(body, color) {
