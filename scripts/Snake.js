@@ -2,14 +2,21 @@ class Snake {
     rectWidth = 20;
     rectHeight = 20;
     boundary = [39, 29];
+    
+    // fields declared
+    position;
+    ctx;
+    bodyList;
+    length;
+    direction;
+    food;
+    score;
 
     constructor(x, y, ctx) {
         this.position = new Vector2(x, y);
         this.ctx = ctx;
         this.bodyList = [];
-        this.length;
         this.direction = new Vector2(1, 0); // default to right
-        this.food;
         this.generateFood();
         this.score = 0;
         
