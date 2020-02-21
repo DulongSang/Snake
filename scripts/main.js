@@ -3,7 +3,7 @@ let ctx;
 let snake;
 let updateEventId;
 let gameStatus;
-let updateFrequency = 200;
+let updateFrequency = 120;
 let update;
 let currentAI;
 
