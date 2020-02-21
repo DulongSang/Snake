@@ -2,7 +2,8 @@ let canvas;
 let ctx;
 let snake;
 let updateEventId;
-const updateFrequency = 200;
+let gameStatus;
+let updateFrequency = 200;
 
 const leftKey = 37;
 const upKey = 38;
@@ -17,7 +18,11 @@ const initialize = function() {
 const update = function() {
     if (snake.update()) {
         clearInterval(updateEventId);
+        ctx.font = "100px Arial";
+        ctx.fillText("Game Over", 135, 250);
+
         console.log("Game Over!");
+        gameStatus = "over";
     }
 }
 
@@ -34,7 +39,6 @@ document.onkeydown = function(event) {
         switch(keyCode) {
             case leftKey:
                 newDirection = new Vector2(-1, 0);
-                console.log("left");
                 break;
             case upKey:
                 newDirection = new Vector2(0, -1);
@@ -52,13 +56,49 @@ document.onkeydown = function(event) {
         snake.updateDirection(newDirection);
 }
 
-function checkCanvasSupported() {
-    let canvas = document.getElementById("map");
+const checkCanvasSupported = function() {
+    canvas = document.getElementById("map");
     if (canvas.getContext) {
         ctx = canvas.getContext("2d");
-        initialize();
-        updateEventId = setInterval(update, updateFrequency); 
+         
     } else {
         alert("Your browser does not support the canvas tag!");
+    }
+}
+
+const newGame = function() {
+    if (gameStatus != undefined || gameStatus != "over") {
+        clearInterval(updateEventId);
+    }
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    document.getElementById("score").innerText = "0";
+    initialize();
+    updateEventId = setInterval(update, updateFrequency);
+    gameStatus = "ongoing";
+    document.getElementById("restart").innerText = "Restart";
+}
+
+const pause_play = function() {
+    if (gameStatus == "ongoing") {
+        clearInterval(updateEventId);
+        gameStatus = "paused";
+        document.getElementById("pause").innerText = "Play";
+    } else if (gameStatus == "paused") {
+        updateEventId = setInterval(update, updateFrequency);
+        gameStatus = "ongoing";
+        document.getElementById("pause").innerText = "Pause";
+    }
+}
+
+const updateSpeed = function() {
+    let speedText = document.getElementById("speed").value;
+    let speed = parseInt(speedText);
+    if (isNaN(speed) || speed < 0 || speed > 10)
+        return;
+
+    updateFrequency = (10.5 - speed) * 80;
+    if (gameStatus == "ongoing") {
+        clearInterval(updateEventId);
+        updateEventId = setInterval(update, updateFrequency);
     }
 }

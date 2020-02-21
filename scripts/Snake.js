@@ -100,7 +100,7 @@ class Snake {
 
     updateDirection(newDirection) {
         if (!this.direction.equals(newDirection) && !this.direction.equals(newDirection.reverse())) {
-            console.log("direction changed: " + newDirection.toString());
+            //console.log("direction changed: " + newDirection.toString());
             this.direction = newDirection;
         }
     }
