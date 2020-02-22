@@ -6,6 +6,7 @@ let gameStatus;
 let updateFrequency = 120;
 let update;
 let currentAI;
+let moves = [];
 
 const spaceKey = 32;
 const leftKey = 37;
@@ -93,16 +94,16 @@ const onkeydownHandler = function(event) {
     let newDirection = null;
         switch(keyCode) {
             case leftKey:
-                newDirection = new Vector2(-1, 0);
+                newDirection = leftDir;
                 break;
             case upKey:
-                newDirection = new Vector2(0, -1);
+                newDirection = upDir;
                 break;
             case rightKey:
-                newDirection = new Vector2(1, 0);
+                newDirection = rightDir;
                 break;
             case downKey:
-                newDirection = new Vector2(0, 1);
+                newDirection = downdir;
                 break;
             case spaceKey:
                 pause_play();
@@ -120,16 +121,68 @@ const useGreedy = function() {
             snake.updateDirection(greedyAlgorithm(snake));
             update_default();
         }
-        clearInterval(updateEventId);
-        updateEventId = setInterval(update, updateFrequency);
+        if (gameStatus == "ongoing") {
+            clearInterval(updateEventId);
+            updateEventId = setInterval(update, updateFrequency);
+        }
         document.getElementById("greedy_button").style.color = "blue";
         document.onkeydown = function() {};
         currentAI = "greedy";
     } else {
         update = update_default;
-        clearInterval(updateEventId);
-        updateEventId = setInterval(update, updateFrequency);
+        if (gameStatus == "ongoing") {
+            clearInterval(updateEventId);
+            updateEventId = setInterval(update, updateFrequency);
+        }
         document.getElementById("greedy_button").style.color = "black";
+        document.onkeydown = onkeydownHandler;
+        currentAI = "none";
+    }
+}
+
+const useAStar = function() {
+    if (currentAI != "astar") {
+        update = function() {
+            if (moves.length == 0) {
+                moves = AStarAlgorithm(snake);
+            }
+            let nextMove = moves.pop();
+            let nextDir;
+            switch(nextMove) {
+                case 0:
+                    nextDir = leftDir;
+                    break;
+                case 1:
+                    nextDir = rightDir;
+                    break;
+                case 2:
+                    nextDir = upDir;
+                    break;
+                case 3:
+                    nextDir = downDir;
+                    break;
+                default:
+                    nextDir = leftDir;
+                    break;
+            }
+            snake.updateDirection(nextDir);
+            update_default();
+        }
+
+        if (gameStatus == "ongoing") {
+            clearInterval(updateEventId);
+            updateEventId = setInterval(update, updateFrequency);
+        }
+        document.getElementById("astar_button").style.color = "blue";
+        document.onkeydown = function() {};
+        currentAI = "astar";
+    } else {
+        update = update_default;
+        if (gameStatus == "ongoing") {
+            clearInterval(updateEventId);
+            updateEventId = setInterval(update, updateFrequency);
+        }
+        document.getElementById("astar_button").style.color = "black";
         document.onkeydown = onkeydownHandler;
         currentAI = "none";
     }
@@ -144,3 +197,4 @@ document.getElementById("menu_new_game").onclick = newGame;
 document.getElementById("speed").oninput = updateSpeed;
 document.getElementById("pause_button").onclick = pause_play;
 document.getElementById("greedy_button").onclick = useGreedy;
+document.getElementById("astar_button").onclick = useAStar;
