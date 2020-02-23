@@ -34,13 +34,19 @@
     </div>
     <br/>
     <p>AI</p>
-    <div class="radio-group" id="choose-ai">
-      <input type="radio" id="none-ai" name="choose-ai" checked>
-      <label for="none-ai">None</label>
-      <input type="radio" id="simple-greedy" name="choose-ai">
-      <label for="simple-greedy">Simple Greedy</label>
-      <input type="radio" id="astar" name="choose-ai">
-      <label for="astar">Shortest Path</label>
+    <div id="choose-ai">
+      <div class="radio-group">
+        <input type="radio" id="none-ai" name="choose-ai" checked>
+        <label for="none-ai">None</label>
+        <input type="radio" id="simple-greedy" name="choose-ai">
+        <label for="simple-greedy">Simple Greedy</label>
+        <input type="radio" id="astar" name="choose-ai">
+        <label for="astar">Shortest Path</label>
+      </div>
+      <div class="radio-group">
+        <input type="radio" id="hamiltonian" name="choose-ai">
+        <label for="hamiltonian">Hamiltonian Cycle</label>
+      </div>
     </div>
     <div class="tips">
       <p>Use keyboard ↑ ↓ ← → to control the snake.</p>
