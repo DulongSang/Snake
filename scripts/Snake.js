@@ -1,18 +1,21 @@
-class Snake {
-    rectWidth = 20;
-    rectHeight = 20;
-    boundary = [39, 29];
+const gridSize = 30;
+const bodyShort = 20;
+const bodyLong = 25;
+const bodyDiff = 5;
+const boundary = [24, 19];
 
-    headColor = "DarkViolet";
-    bodyColor = "DeepPink";
-    foodColor = "Aqua";
-    
+const bodyColor = "DeepPink";
+const foodColor = "Aqua";
+
+class Snake {
+
     // fields declared
     position;
     ctx;
     bodyList;
     length;
     direction;
+    previousDir;
     food;
     score;
 
@@ -21,26 +24,27 @@ class Snake {
         this.ctx = ctx;
         this.bodyList = [];
         this.direction = new Vector2(1, 0); // default to right
+        this.previousDir = this.direction;
         this.generateFood();
         this.score = 0;
         
         // init the snake's body
         this.bodyList.push(this.position.clone());
         let direction = this.direction.reverse();
-        let body1position = this.position.createNew(direction);
-        let body2position = body1position.createNew(direction);
+        let body1position = this.position.add(direction);
+        let body2position = body1position.add(direction);
         this.bodyList.push(body1position);
         this.bodyList.push(body2position);
         this.length = 3;
-        this.drawRect(this.bodyList[0], this.headColor);
-        for (let i = 1; i < this.length; i++) {
-            this.drawRect(this.bodyList[i], this.bodyColor);
-        }
+        ctx.fillStyle = bodyColor;
+        ctx.fillRect(this.bodyList[0].toWorldX(), this.bodyList[0].toWorldY()+bodyDiff, bodyLong, bodyShort);
+        ctx.fillRect(this.bodyList[1].toWorldX(), this.bodyList[1].toWorldY()+bodyDiff, gridSize, bodyShort);
+        ctx.fillRect(this.bodyList[2].toWorldX(), this.bodyList[2].toWorldY()+bodyDiff, gridSize, bodyShort);
     }
 
     // return true if the game is over
     update() {
-        this.position.add(this.direction);
+        this.position = this.position.add(this.direction);
         if (this.isCollided(this.position))
             return true;
         
@@ -49,7 +53,6 @@ class Snake {
             let body = this.bodyList[this.length-1].clone();
             this.bodyList.push(body);
             this.length += 1;
-            this.drawRect(body, this.bodyColor);
 
             // generate new food
             this.generateFood();
@@ -59,14 +62,14 @@ class Snake {
             document.getElementById("score").innerText = this.score;
         } else {
             // clear the last body rect
-            this.drawRect(this.bodyList[this.length-1], "clear");
+            let lastBody = this.bodyList[this.length-1];
+            this.ctx.clearRect(lastBody.toWorldX(), lastBody.toWorldY(), gridSize, gridSize);
         }
 
         // move the last body to the front, and draw
         this.bodyList.pop();
         this.bodyList.unshift(this.position.clone());
-        this.drawRect(this.bodyList[0], this.headColor);
-        this.drawRect(this.bodyList[1], this.bodyColor);
+        this.drawSnake();
 
         return false;
     }
@@ -81,8 +84,8 @@ class Snake {
         }
 
         // check boundary collision
-        if (target.x < 0 || target.x > this.boundary[0] ||
-            target.y < 0 || target.y > this.boundary[1]) {
+        if (target.x < 0 || target.x > boundary[0] ||
+            target.y < 0 || target.y > boundary[1]) {
             return true;
         }
         
@@ -98,24 +101,42 @@ class Snake {
 
     generateFood() {
         let x, y;
+        let food;
         while (true) {
-            x = Math.floor(Math.random() * this.boundary[0]);
-            y = Math.floor(Math.random() * this.boundary[1]);
-            this.food = new Vector2(x, y);
-            if (!this.isCollided(this.food))
+            x = Math.floor(Math.random() * boundary[0]);
+            y = Math.floor(Math.random() * boundary[1]);
+            food = new Vector2(x, y);
+            if (!this.isCollided(food))
                 break;
         }
-        this.drawRect(this.food, this.foodColor);
+        this.food = food;
+        // draw food
+        this.ctx.fillStyle = foodColor;
+        this.ctx.fillRect(food.toWorldX()+bodyDiff, food.toWorldY()+bodyDiff, bodyShort, bodyShort);
     }
 
-    drawRect(body, color) {
-        let x = body.toWorldX();
-        let y = body.toWorldY();
-        if (color == "clear") {
-            this.ctx.clearRect(x, y, this.rectWidth, this.rectHeight);
-        } else {
-            this.ctx.fillStyle = color;
-            this.ctx.fillRect(x, y, this.rectWidth, this.rectHeight);
+    drawSnake() {
+        let x0 = this.bodyList[0].toWorldX();
+        let y0 = this.bodyList[0].toWorldY();
+        let x1 = this.bodyList[1].toWorldX();
+        let y1 = this.bodyList[1].toWorldY();
+        this.ctx.fillStyle = bodyColor;
+
+        // draw the head and the second body
+        if (this.direction.equals(leftDir)) {
+            this.ctx.fillRect(x0 + bodyDiff, y0 + bodyDiff, bodyLong, bodyShort);
+            this.ctx.fillRect(x1, y1 + bodyDiff, bodyLong, bodyShort);
+        } else if (this.direction.equals(rightDir)) {
+            this.ctx.fillRect(x0, y0 + bodyDiff, bodyLong, bodyShort);
+            this.ctx.fillRect(x1 + bodyDiff, y1 + bodyDiff, bodyLong, bodyShort);
+        } else if (this.direction.equals(upDir)) {
+            this.ctx.fillRect(x0 + bodyDiff, y0 + bodyDiff, bodyShort, bodyLong);
+            this.ctx.fillRect(x1 + bodyDiff, y1, bodyShort, bodyLong);
+        } else {    // direction equals downDir
+            this.ctx.fillRect(x0 + bodyDiff, y0, bodyShort, bodyLong);
+            this.ctx.fillRect(x1 + bodyDiff, y1 + bodyDiff, bodyShort, bodyLong);
         }
+
+        this.previousDir = this.direction;
     }
 }

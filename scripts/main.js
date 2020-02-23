@@ -15,7 +15,7 @@ const rightKey = 39;
 const downKey = 40;
 
 const initialize = function() {
-    snake = new Snake(20, 15, ctx);
+    snake = new Snake(5, 10, ctx);
 }
 
 const defaultUpdate = function() {

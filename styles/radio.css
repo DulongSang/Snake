@@ -4,7 +4,7 @@
   display: -webkit-box;
   display: flex;
   -webkit-box-align: center;
-          align-items: center;
+  align-items: center;
   margin-bottom: 2em;
 }
 
@@ -54,8 +54,7 @@ input[type="radio"]:checked + label:before {
 }
 
 /* Transition */
-label,
-label::before {
+label, label::before {
   -webkit-transition: .25s all ease;
   transition: .25s all ease;
 }

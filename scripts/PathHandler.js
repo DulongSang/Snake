@@ -1,9 +1,3 @@
-const leftDir = new Vector2(-1, 0);
-const rightDir = new Vector2(1, 0);
-const upDir = new Vector2(0, -1);
-const downDir = new Vector2(0, 1);
-
-
 // return manhattan distance between a and b
 // param: a, b: Vector2
 const manhattanDistance = function(a, b) {
@@ -14,10 +8,10 @@ const manhattanDistance = function(a, b) {
 // each element contains direction and position [dir, position]
 // dir: 0 -> left, 1 -> right, 2 -> top, 3 -> bottom
 const getAvailableNeighbours = function(snake, position) {
-    let left = position.createNew(leftDir);
-    let right = position.createNew(rightDir);
-    let top = position.createNew(upDir);
-    let bottom = position.createNew(downDir);
+    let left = position.add(leftDir);
+    let right = position.add(rightDir);
+    let top = position.add(upDir);
+    let bottom = position.add(downDir);
 
     let neighbours = [left, right, top, bottom];
     let availableNeighbours = [];
@@ -62,16 +56,19 @@ const greedyAlgorithm = function(snake) {
     }
 }
 
-function AStarNode(position, previous, direction, gScore, hScore) {
-    this.position = position;
-    this.previous = previous;
-    this.direction = direction;
-    this.gScore = gScore;
-    this.hScore = hScore;
-    this.fScore = gScore + hScore;
-}
-AStarNode.prototype.compareTo = function(otherAStarNode) {
-    return this.fScore - otherAStarNode.fScore;
+class AStarNode {
+    constructor(position, previous, direction, gScore, hScore) {
+        this.position = position;
+        this.previous = previous;
+        this.direction = direction;
+        this.gScore = gScore;
+        this.hScore = hScore;
+        this.fScore = gScore + hScore;
+    }
+
+    compareTo(otherAStarNode) {
+        return this.fScore - otherAStarNode.fScore;
+    }
 }
 
 // implement Min heap
