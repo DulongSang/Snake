@@ -49,9 +49,20 @@ button {
 }
 
 #tools {
+    height: 600px;
     font-size: 32px;
 }
 
+.tips {
+    font-size: 20px;
+}
+
+footer {
+    width: 100%;
+    text-align: center;
+}
+
+/* slider style from W3C */
 .slider {
     -webkit-appearance: none;  /* Override default CSS styles */
     appearance: none;
@@ -75,13 +86,13 @@ button {
     appearance: none;
     width: 25px; /* Set a specific slider handle width */
     height: 25px; /* Slider handle height */
-    background: #4CAF50; /* Green background */
+    background: #47cf73; /* Green background */
     cursor: pointer; /* Cursor on hover */
 }
   
 .slider::-moz-range-thumb {
     width: 25px; /* Set a specific slider handle width */
     height: 25px; /* Slider handle height */
-    background: #4CAF50; /* Green background */
+    background: #47cf73; /* Green background */
     cursor: pointer; /* Cursor on hover */
 }

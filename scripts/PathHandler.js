@@ -22,7 +22,7 @@ const getAvailableNeighbours = function(snake, position) {
     let neighbours = [left, right, top, bottom];
     let availableNeighbours = [];
     for (let i = 0; i < 4; i++) {
-        if (!snake.isCollided("check", neighbours[i]))
+        if (!snake.isCollided(neighbours[i]))
             availableNeighbours.push([i, neighbours[i]]);
     }
     return availableNeighbours;
@@ -161,6 +161,7 @@ const AStarAlgorithm = function(snake) {
             break;
         }
 
+        // only open a position once
         if (priorityQ_indexOf(closeSet, currentNode.position) != -1)
             continue;
         closeSet.push(currentNode);
@@ -176,11 +177,10 @@ const AStarAlgorithm = function(snake) {
                 priorityQ_enqueue(openSet, node);
             } else {
                 // if the currentNode.gScore + 1 < previous gScore, update
-                let diff = currentNode.gScore + 1 - openSet[index].gScore;
-                if (diff < 0) {
-                    openSet[index].gScore += diff;
-                    openSet[index].fScore += diff;
-                    priorityQ_decreaseKey(openSet, index, openSet[index].fScore);
+                let diff = openSet[index].gScore - (currentNode.gScore + 1);
+                if (diff > 0) {
+                    openSet[index].gScore -= diff;
+                    priorityQ_decreaseKey(openSet, index, openSet[index].fScore - diff);
                 }
             }
         }

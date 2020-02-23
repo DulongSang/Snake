@@ -41,7 +41,7 @@ class Snake {
     // return true if the game is over
     update() {
         this.position.add(this.direction);
-        if (this.isCollided())
+        if (this.isCollided(this.position))
             return true;
         
         if (this.position.equals(this.food)) {
@@ -71,25 +71,10 @@ class Snake {
         return false;
     }
 
-    // mode: "body", "food", "check"
-    isCollided(mode="body", target=undefined) {
-        let ignoreHead;
-        if (mode == "body") {
-            target = this.position;
-            ignoreHead = true;
-        } else if (mode == "food") {
-            target = this.food;
-            ignoreHead = false;
-        } else if (mode == "check"){
-            ignoreHead = false;
-        } else {
-            return false;
-        }
-
+    // return true if target is collided with body or boundary, false otherwise
+    isCollided(target) {
         // check body collision
         let i = 0;
-        if (ignoreHead)
-            i = 1;
         for (; i < this.length; i++) {
             if (target.equals(this.bodyList[i]))
                 return true;
@@ -117,7 +102,7 @@ class Snake {
             x = Math.floor(Math.random() * this.boundary[0]);
             y = Math.floor(Math.random() * this.boundary[1]);
             this.food = new Vector2(x, y);
-            if (!this.isCollided("food"))
+            if (!this.isCollided(this.food))
                 break;
         }
         this.drawRect(this.food, this.foodColor);

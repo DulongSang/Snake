@@ -3,7 +3,7 @@ let ctx;
 let snake;
 let updateEventId;
 let gameStatus;
-let updateFrequency = 120;
+let updateFrequency = 80;
 let update;
 let currentAI;
 let moves = [];
@@ -18,7 +18,7 @@ const initialize = function() {
     snake = new Snake(20, 15, ctx);
 }
 
-const update_default = function() {
+const defaultUpdate = function() {
     if (snake.update()) {
         gameOver();
     }
@@ -65,7 +65,7 @@ const updateSpeed = function() {
     if (isNaN(speed) || speed < 0 || speed > 10)
         return;
 
-    updateFrequency = (3.2 - Math.sqrt(speed)) * 100;   // linearize the speed
+    updateFrequency = (3.07 - Math.sqrt(speed)) * 100;   // linearize the speed
     if (gameStatus == "ongoing") {
         clearInterval(updateEventId);
         updateEventId = setInterval(update, updateFrequency);
@@ -103,7 +103,7 @@ const onkeydownHandler = function(event) {
                 newDirection = rightDir;
                 break;
             case downKey:
-                newDirection = downdir;
+                newDirection = downDir;
                 break;
             case spaceKey:
                 pause_play();
@@ -115,86 +115,66 @@ const onkeydownHandler = function(event) {
         snake.updateDirection(newDirection);
 }
 
-const useGreedy = function() {
-    if (currentAI != "greedy") {
-        update = function() {
-            snake.updateDirection(greedyAlgorithm(snake));
-            update_default();
-        }
-        if (gameStatus == "ongoing") {
-            clearInterval(updateEventId);
-            updateEventId = setInterval(update, updateFrequency);
-        }
-        document.getElementById("greedy_button").style.color = "blue";
-        document.onkeydown = function() {};
-        currentAI = "greedy";
-    } else {
-        update = update_default;
-        if (gameStatus == "ongoing") {
-            clearInterval(updateEventId);
-            updateEventId = setInterval(update, updateFrequency);
-        }
-        document.getElementById("greedy_button").style.color = "black";
-        document.onkeydown = onkeydownHandler;
-        currentAI = "none";
-    }
+const simpleGreedyUpdate = function() {
+    snake.updateDirection(greedyAlgorithm(snake));
+    defaultUpdate();
 }
 
-const useAStar = function() {
-    if (currentAI != "astar") {
-        update = function() {
-            if (moves.length == 0) {
-                moves = AStarAlgorithm(snake);
-            }
-            let nextMove = moves.pop();
-            let nextDir;
-            switch(nextMove) {
-                case 0:
-                    nextDir = leftDir;
-                    break;
-                case 1:
-                    nextDir = rightDir;
-                    break;
-                case 2:
-                    nextDir = upDir;
-                    break;
-                case 3:
-                    nextDir = downDir;
-                    break;
-                default:
-                    nextDir = leftDir;
-                    break;
-            }
-            snake.updateDirection(nextDir);
-            update_default();
-        }
+const AStarUpdate = function() {
+    if (moves.length == 0) {
+        moves = AStarAlgorithm(snake);
+    }
+    let nextMove = moves.pop();
+    let nextDir;
+    switch(nextMove) {
+        case 0:
+            nextDir = leftDir;
+            break;
+        case 1:
+            nextDir = rightDir;
+            break;
+        case 2:
+            nextDir = upDir;
+            break;
+        case 3:
+            nextDir = downDir;
+            break;
+        default:
+            nextDir = leftDir;
+            break;
+    }
+    snake.updateDirection(nextDir);
+    defaultUpdate();
+}
 
-        if (gameStatus == "ongoing") {
-            clearInterval(updateEventId);
-            updateEventId = setInterval(update, updateFrequency);
-        }
-        document.getElementById("astar_button").style.color = "blue";
-        document.onkeydown = function() {};
+const updateAIMode = function() {
+    if (document.getElementById("none-ai").checked) {
+        currentAI = "none";
+        update = defaultUpdate;
+        document.onkeydown = onkeydownHandler;
+    } else if (document.getElementById("simple-greedy").checked) {
+        currentAI = "simple greedy";
+        update = simpleGreedyUpdate;
+        document.onkeydown = null;
+    } else if (document.getElementById("astar").checked) {
         currentAI = "astar";
-    } else {
-        update = update_default;
-        if (gameStatus == "ongoing") {
-            clearInterval(updateEventId);
-            updateEventId = setInterval(update, updateFrequency);
-        }
-        document.getElementById("astar_button").style.color = "black";
-        document.onkeydown = onkeydownHandler;
-        currentAI = "none";
+        update = AStarUpdate;
+        document.onkeydown = null;
+    }
+    
+    moves = []; // empty moves array
+    if (gameStatus == "ongoing") {
+        clearInterval(updateEventId);
+        updateEventId = setInterval(update, updateFrequency);
     }
 }
 
 
-update = update_default;
+update = defaultUpdate;
 currentAI = "none";
 checkCanvasSupported();
 document.onkeydown = onkeydownHandler;
 document.getElementById("menu_new_game").onclick = newGame;
 document.getElementById("speed").oninput = updateSpeed;
 document.getElementById("pause_button").onclick = pause_play;
-document.getElementById("greedy_button").onclick = useGreedy;
-document.getElementById("astar_button").onclick = useAStar;
+document.getElementById("choose-ai").oninput = updateAIMode;

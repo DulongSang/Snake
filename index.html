@@ -4,7 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Snake</title>
-  <link rel="stylesheet" href="style.css" >
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/radio.css">
 </head>
 
 <body>
@@ -22,21 +23,36 @@
 
   <div id="tools">
     <div>
-      <p style="text-align: center;">Tools</p>
+      <p style="text-align: center;">Control Panel</p>
       <span>Speed: </span>
-      <input type="range" min="1" max="10" value="6" id="speed" class="slider">
+      <input type="range" min="1" max="9" value="5" id="speed" class="slider">
     </div>
     <br/>
     <div>
       <button id="pause_button">Pause</button>
-      <span>(Space)</span>
+      <span style="font-size: 20px;">(Space)</span>
     </div>
     <br/>
-    <div>
-      <button id="greedy_button">Greedy 1</button>
-      <button id="astar_button">A*</button>
+    <p>AI</p>
+    <div class="radio-group" id="choose-ai">
+      <input type="radio" id="none-ai" name="choose-ai" checked>
+      <label for="none-ai">None</label>
+      <input type="radio" id="simple-greedy" name="choose-ai">
+      <label for="simple-greedy">Simple Greedy</label>
+      <input type="radio" id="astar" name="choose-ai">
+      <label for="astar">Shortest Path</label>
+    </div>
+    <div class="tips">
+      <p>Use keyboard ↑ ↓ ← → to control the snake.</p>
+      <p>Activating an AI will disable the keyboard control.</p>
+      <p>You can change AI and speed at anytime!</p>
     </div>
   </div>
+
+  <footer>
+    <p><a href="https://github.com/DulongSang/Snake">View GitHub Repo</a> ©MasterTime 2020</p>
+    <p>Last update: Feb 22, 2020</p>
+  </footer>
 
   <script src="scripts/Vector2.js" type="text/javascript"></script>
   <script src="scripts/Snake.js" type="text/javascript"></script>
