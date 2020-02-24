@@ -6,7 +6,6 @@ let gameStatus;
 let updateFrequency = 80;
 let update;
 let currentAI;
-let moves = [];
 
 const spaceKey = 32;
 const leftKey = 37;
@@ -60,11 +59,7 @@ const pause_play = function() {
 }
 
 const updateSpeed = function() {
-    let speedText = document.getElementById("speed").value;
-    let speed = parseInt(speedText);
-    if (isNaN(speed) || speed < 0 || speed > 10)
-        return;
-
+    let speed = parseInt(document.getElementById("speed").value);
     updateFrequency = (3.07 - Math.sqrt(speed)) * 100;   // linearize the speed
     if (gameStatus == "ongoing") {
         clearInterval(updateEventId);
@@ -115,54 +110,33 @@ const onkeydownHandler = function(event) {
         snake.updateDirection(newDirection);
 }
 
-const simpleGreedyUpdate = function() {
-    snake.updateDirection(greedyAlgorithm(snake));
-    defaultUpdate();
-}
-
-const AStarUpdate = function() {
-    if (moves.length == 0) {
-        moves = AStarAlgorithm(snake);
+const constructUpdateFunction = function(handler) {
+    return () => {
+        snake.updateDirection(handler(snake));
+        defaultUpdate();
     }
-    let nextMove = moves.pop();
-    let nextDir;
-    switch(nextMove) {
-        case 0:
-            nextDir = leftDir;
-            break;
-        case 1:
-            nextDir = rightDir;
-            break;
-        case 2:
-            nextDir = upDir;
-            break;
-        case 3:
-            nextDir = downDir;
-            break;
-        default:
-            nextDir = leftDir;
-            break;
-    }
-    snake.updateDirection(nextDir);
-    defaultUpdate();
 }
 
 const updateAIMode = function() {
     if (document.getElementById("none-ai").checked) {
         currentAI = "none";
-        update = defaultUpdate;
         document.onkeydown = onkeydownHandler;
+        update = defaultUpdate;
     } else if (document.getElementById("simple-greedy").checked) {
         currentAI = "simple greedy";
-        update = simpleGreedyUpdate;
         document.onkeydown = null;
+        update = constructUpdateFunction(greedyHandler);
     } else if (document.getElementById("astar").checked) {
         currentAI = "astar";
-        update = AStarUpdate;
         document.onkeydown = null;
+        update = constructUpdateFunction(shortestPathHandler);
+    } else if (document.getElementById("hamiltonian").checked) {
+        currentAI = "hamiltonian";
+        document.onkeydown = null;
+        update = constructUpdateFunction(hamiltonianHandler);
     }
     
-    moves = []; // empty moves array
+    moves = [];
     if (gameStatus == "ongoing") {
         clearInterval(updateEventId);
         updateEventId = setInterval(update, updateFrequency);

@@ -13,9 +13,11 @@ of the body as the next step.
 
 ### Shortest Path
 The program computes the shortest path from the snake's head to the food and follows this path.
+The program uses [A* algorithm](https://en.wikipedia.org/wiki/A*_search_algorithm) with manhattan distance as the heuristic to find the shortest path.
 
 ### Hamiltonian Cycle
-To be implemented.
+The snake always follows a [hamiltonian cycle](https://en.wikipedia.org/wiki/Hamiltonian_path) 
+and [takes shortcuts](https://github.com/chuyangliu/snake/blob/master/docs/algorithms.md#take-shortcuts) if available.
 
 ![Pikachu](pikachu.gif)
 
