@@ -123,14 +123,22 @@ const updateAIMode = function() {
         currentAI = "none";
         document.onkeydown = onkeydownHandler;
         update = defaultUpdate;
+
     } else if (document.getElementById("simple-greedy").checked) {
-        currentAI = "simple greedy";
+        currentAI = "simple-greedy";
         document.onkeydown = null;
         update = constructUpdateFunction(greedyHandler);
-    } else if (document.getElementById("astar").checked) {
-        currentAI = "astar";
+
+    } else if (document.getElementById("path-planning").checked) {
+        currentAI = "path-planning";
+        document.onkeydown = null;
+        update = constructUpdateFunction(pathPlanningHandler);
+
+    } else if (document.getElementById("shortest-path").checked) {
+        currentAI = "shortest-path";
         document.onkeydown = null;
         update = constructUpdateFunction(shortestPathHandler);
+        
     } else if (document.getElementById("hamiltonian").checked) {
         currentAI = "hamiltonian";
         document.onkeydown = null;

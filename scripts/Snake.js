@@ -29,7 +29,7 @@ class Snake {
         this.score = 0;
         
         // init the snake's body
-        this.bodyList.push(this.position.clone());
+        this.bodyList.push(this.position);
         let direction = this.direction.reverse();
         let body1position = this.position.add(direction);
         let body2position = body1position.add(direction);
@@ -50,7 +50,7 @@ class Snake {
         
         if (this.position.equals(this.food)) {
             // increase the snake's length
-            let body = this.bodyList[this.length-1].clone();
+            let body = this.bodyList[this.length-1];
             this.bodyList.push(body);
             this.length += 1;
 
@@ -68,7 +68,7 @@ class Snake {
 
         // move the last body to the front, and draw
         this.bodyList.pop();
-        this.bodyList.unshift(this.position.clone());
+        this.bodyList.unshift(this.position);
         this.drawSnake();
 
         return false;

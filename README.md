@@ -11,9 +11,15 @@ For each step, the program computes the manhattan distance of each neighbour of 
 it will take the neighbour with the least manhattan distance and without crashing with any part
 of the body as the next step.
 
-### Shortest Path
-The program computes the shortest path from the snake's head to the food and follows this path.
+### Path Planning
+The program plans a current shortest path from the snake's head to the food and follows this path.
 The program uses [A* algorithm](https://en.wikipedia.org/wiki/A*_search_algorithm) with manhattan distance as the heuristic to find the shortest path.
+
+### Shortest Path
+The program computes a current shortest path from the snake's head to the food every tick, 
+and take the first move of the path as the next step. Use A* as well.
+If there is no way from the head to the food, the program takes an available neighour of
+the snake as the next position.
 
 ### Hamiltonian Cycle
 The snake always follows a [hamiltonian cycle](https://en.wikipedia.org/wiki/Hamiltonian_path) 

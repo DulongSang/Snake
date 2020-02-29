@@ -204,7 +204,7 @@ const AStarAlgorithm = function(snake, start, dest) {
 }
 
 // return a Vector2 direction
-const shortestPathHandler = function(snake) {
+const pathPlanningHandler = function(snake) {
     if (moves == null) {
         let randomMove = Math.floor(Math.random() * 4);
         return toVector2Dir(randomMove);
@@ -295,6 +295,23 @@ const hamiltonianHandler = function(snake) {
 
     return toVector2Dir(hCycle[head.y][head.x]);
 }
+
+// only plan for the next step
+const shortestPathHandler = function(snake) {
+    let moves = AStarAlgorithm(snake, snake.position, snake.food);
+    if (moves) {
+        return toVector2Dir(moves.pop());
+    } else {
+        let neighbours = getAvailableNeighbours(snake, snake.position);
+        if (neighbours.length != 0) {
+            let randomInt = Math.floor(Math.random() * neighbours.length);
+            return toVector2Dir(neighbours[randomInt][0]);
+        } else {
+            return leftDir;
+        }
+    }
+}
+
 
 const drawPath = function(head) {
     let current = head;

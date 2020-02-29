@@ -1,5 +1,6 @@
 const worldScale = 30;
 
+// immutable
 class Vector2 {
     constructor(x, y) {
         this.x = x;
@@ -8,10 +9,6 @@ class Vector2 {
 
     add(otherVector2) {
         return new Vector2(this.x + otherVector2.x, this.y + otherVector2.y);
-    }
-
-    clone() {
-        return new Vector2(this.x, this.y);
     }
 
     reverse() {
